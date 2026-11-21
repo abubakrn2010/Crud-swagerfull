@@ -1,34 +1,36 @@
-import React from 'react'
-import { createBrowserRouter } from "react-router";
-import { RouterProvider } from "react-router/dom";
-import About from './About';
-import Layout from './Layout';
-import Home from './Home';
+import React, { lazy, Suspense } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router";
+import Layout from "./Layout";
+
+const Home = lazy(() => import("./Home"));
+const About = lazy(() => import("./About"));
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "about",
+        element: <About />,
+      }
+    ],
+  },
+]);
 
 const App = () => {
+  return (
+    <div>
+        <Suspense  fallback={<h1 style={{fontSize:'30px',display:'flex',justifyContent:'center',marginTop:'300px'}}>Loading Page...</h1>}>
+    
+      <RouterProvider router={router} />
+    </Suspense>
+    </div>
+  );
+};
 
-    const router = createBrowserRouter([
-        {
-            path: "/",
-            element: <Layout />,
-            children: [
-                {
-                    index: true,
-                    element: <Home />
-                },
-                {
-                    path: "/about",
-                    element: <About />
-                }
-            ]
-        }
-    ]);
-
-    return (
-        <div className="bg-white text-[#333333]">
-            <RouterProvider router={router} />
-        </div>
-    )
-}
-
-export default App
+export default App;
